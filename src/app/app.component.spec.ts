@@ -187,6 +187,13 @@
 
 import { TestBed } from '@angular/core/testing'; // TestBed é a aplicação que possibilita testes unitários no Angular
 import { AppComponent } from './app.component';
+// No nosso caso, como estamos usando o RouterModule para conseguir carregar a página com diferentes componentes
+// (olhe, para referência, o arquivo ./routes/routes.module.ts que indica o caminho padrão para o componente user)
+// e que é carregado onde fica o <router-outlet></router-outlet> no app.component.html
+//
+// Para fins de teste, precisamos importar o RouterTestingModule aqui para não receber o erro
+// 'router-outlet' is not a known element quando tentarmos rodar os nossos testes.
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   /**
@@ -194,8 +201,10 @@ describe('AppComponent', () => {
    * Nas declarations está o AppComponent, que é o componente principal que será testado.
    */
   beforeEach(() => TestBed.configureTestingModule({
-    declarations: [AppComponent]
-  }));
+    declarations: [AppComponent],
+    imports: [RouterTestingModule]
+    })
+  );
   /**
    * A seguir, o Angular cria um primeiro teste que consiste em verificar se o componente foi criado
    */
@@ -219,7 +228,7 @@ describe('AppComponent', () => {
    */
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent); // Define o componente a ser criado
-    fixture.detectChanges(); // o detectChanges() simula a execuação da instância no navegador, passando a renderizá-lo
+    fixture.detectChanges(); // o detectChanges() simula a execução da instância no navegador, passando a renderizá-lo
     const compiled = fixture.nativeElement as HTMLElement;  // com o nativeElement acessamos o objeto renderizado
     // Finalmente, na última linha buscamos em elemento que tem a classe content, acessando o elemento span dele,
     // verificando se o conteúdo contém o texto com o nome do title e a frase que foi definida.

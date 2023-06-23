@@ -1,1 +1,30 @@
-<p>user works!</p>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-8 col-sm-8 mb-3 offset-2">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Qual o nome do usuário?</h5>
+                </div>
+                <div class="card-body">
+                    <div role="form">
+                        <div class="form-group col-8 offset-2">
+                            <input type="text" #user_name class="form-control" [(ngModel)]="user.name" name="Nome" />
+                            <input type="text" #user_surname class="form-control" [(ngModel)]="user.surname" name="Sobrenome" />
+                        </div>
+                        <div class="form-group text-center">
+                            <button class="btn btn-primary" (click)="createUser()" [disabled]="user.name == '' || user.surname == ''">Criar um novo usuário</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card mb-3 col-5 list-card" id="user-cards" style="max-width: 18rem;" *ngFor="let usr of userList; let i = index" (click)="removeUser(i)">
+            <div class="card-body">
+                <h6>{{ usr.name }} {{ usr.surname }}</h6>
+            </div>
+        </div>
+    </div>
+</div>

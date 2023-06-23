@@ -114,4 +114,20 @@ describe('UserComponent', () => {
     expect(compiled.innerHTML).not.toContain("João Melão");
   });
 
+  /**
+   * Seguindo uma lógica muito parecida do teste anterior, vamos agora incluir um novo
+   * usuário quando o botão "Criar um novo usuário" for clicado.
+   */
+  it("deve adicionar um usuario quando clicar no botão de Criar um novo usuário", () => {
+    // Primeiro definimos o user no component, para que os campos sejam preenchidos
+    component.user = {
+      "name": "Tonho",
+      "surname": "da Lua"
+    };
+    fixture.debugElement.query(By.css("button")).triggerEventHandler("click", null); // Simulamos o clique no botão
+    fixture.detectChanges(); // Renderizamos a página com as alterações
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.innerHTML).toContain("Tonho da Lua"); // E voilá, temos o registro criado com o clique do botão :)
+  });
+
 });

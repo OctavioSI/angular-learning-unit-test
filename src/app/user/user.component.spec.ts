@@ -1,8 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { By } from "@angular/platform-browser"; // necessário para usar o By.css
 import { FormsModule } from '@angular/forms';
 import { UserComponent } from './user.component';
 import { UserService } from './user.service';
+import { UserModel } from './user-model';
 
 describe('UserComponent', () => {
   let component: UserComponent;
@@ -20,7 +21,7 @@ describe('UserComponent', () => {
   });
 
   // Criado automaticamente: garante que o componente existe
-  it('should create', () => {
+  it('deve criar o component', () => {
     expect(component).toBeTruthy();
   });
 
@@ -129,5 +130,55 @@ describe('UserComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.innerHTML).toContain("Tonho da Lua"); // E voilá, temos o registro criado com o clique do botão :)
   });
+
+  /**
+   * E como lidamos com testes de chamadas assíncronas?
+   *
+   * Vamos testar as nossas chamadas de duas formas:
+   * (i) usando async; e
+   * (ii) usando uma função do próprio Angular chamada fakeAsync
+   *
+   * Neste primeiro teste, vamos fazer a chamada com async
+   */
+  it("deve buscar informacoes de forma assincrona com async", async () => {
+    // Primeiro, vamos trazer aqui a resposta que queremos que seja enviada pelo service
+    // para fins do nosso teste
+    const fakedFetchedList = [
+      new UserModel("Mário", "do Armário")
+    ];
+    const userService = fixture.debugElement.injector.get(UserService);
+    // Criamos um spy aqui que chama a função de busca remota no nosso service
+    // spyOn(userService, "fetchUsersFromServer")
+    // No entanto, como estamos simulando o recebimento de informações (não usaríamos
+    // a chamada do service externa para fins de teste, já que o teste unitário deve
+    // ser "independente"), vamos simplesmente retornar a promise com o valor da lista
+    // fake que criamos. Tecnicamente, isso simularia que a função do serviço foi chamada
+    // e que retornou esse valor.
+    spyOn(userService, "fetchUsersFromServer").and.returnValue(Promise.resolve(fakedFetchedList));
+    component.ngOnInit();
+    // o fixture.whenStable do Angular aguarda a finalização das tarefas assíncronas no Component
+    // e retorna uma promise. Podemos usar aqui um await para aguardar o retorno dela, ou
+    // usamos o .then() após o whenStable para chamadas após a promise retornar.
+    await fixture.whenStable();
+    fixture.detectChanges(); // detecta alterações no component
+    expect(component.fetchedList).toEqual(fakedFetchedList);
+  });
+
+  // Como alternativa, podemos usar o fakeAsync com tick() que são oferecidos pelo Angular
+  // Os comentários aplicáveis a este teste são iguais ao teste anterior.
+  //
+  // A vantagem do fakeAsync é que não há callbacks envolvidos, e o teste aparenta
+  // ser mais "linear", como se fosse síncrono.
+  it("deve buscar informacoes de forma assincrona com fakeAsync", fakeAsync (() => {
+    const fakedFetchedList = [
+      new UserModel("Mário", "do Armário")
+    ];
+    const userService = fixture.debugElement.injector.get(UserService);
+    spyOn(userService, "fetchUsersFromServer").and.returnValue(Promise.resolve(fakedFetchedList));
+    component.ngOnInit();
+    tick(); // O tick simula a passagem do tempo até que todas as atividades assíncronas sejam finalizadas
+    fixture.detectChanges();
+    expect(component.fetchedList).toEqual(fakedFetchedList);
+  }));
 
 });

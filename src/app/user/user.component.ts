@@ -8,8 +8,8 @@ import { UserModel } from './user-model';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent {
-
   public userList: UserModel[] = [];
+  public fetchedList: UserModel[] = [];
   public user: UserModel = {
     "name": "",
     "surname": ""
@@ -22,6 +22,9 @@ export class UserComponent {
 
   ngOnInit() {
     this.userList = this.service.getUsers();
+    this.service.fetchUsersFromServer().then((data:UserModel[]) => {
+      this.fetchedList = data;
+    });
   }
 
   createUser() {

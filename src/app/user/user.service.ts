@@ -22,6 +22,19 @@ export class UserService {
   removeUser(index: number){
     this.userList.splice(index, 1);
   }
+  // Esta função abaixo tem apenas o objetivo de simular
+  // a obtenção de uma lista de registros (no caso, apenas 1)
+  // do servidor. Ele aguarda 2 segundos e devolve a lista.
+  //
+  // Em um caso real, colocamos aqui a nossa função com a
+  // comunicação externa como deve ser.
+  fetchUsersFromServer(): Promise<UserModel[]> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve([new UserModel("Johnny", "Depp")]);
+      }, 2000);
+    });
+  }
 
   constructor() { }
 }

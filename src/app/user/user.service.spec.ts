@@ -13,7 +13,7 @@ describe('UserService', () => {
   });
 
   // Criado automaticamente: verifica se a instância do service "injetado" está presente
-  it('should be created', () => {
+  it('service deve ser criado', () => {
     expect(service).toBeTruthy();
   });
 

@@ -28,6 +28,8 @@ describe('UserComponent', () => {
    * Abaixo vamos criar os nossos testes efetivamente
    */
   it("deve chamar a listagem de usuarios do service", () => {
+    // Isso aqui funciona porque quando o componente é iniciado, ele chama o ngOnInit, que atribui
+    // o seguinte:  this.userList = this.service.getUsers();
     const userService = fixture.debugElement.injector.get(UserService);
     expect(userService.getUsers()).toEqual(component.userList);
   });
@@ -40,8 +42,6 @@ describe('UserComponent', () => {
       "surname": "das Couves"
     };
     userService.addUser(component.user);
-    // quando o componente é iniciado, ele chama o ngOnInit, que atribui
-    // o seguinte:  this.userList = this.service.getUsers();
     fixture.detectChanges(); // o detectChanges() simula a execução da instância no navegador, passando a renderizá-lo
     // Aqui buscamos o "conteúdo" do nosso componente renderizado
     const compiled = fixture.debugElement.nativeElement;
